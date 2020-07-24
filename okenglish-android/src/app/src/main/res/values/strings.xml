@@ -1,0 +1,33 @@
+<resources>
+    <string name="app_name">OkEnglish</string>
+    <string name="item_home">单词流</string>
+    <string name="item_tool">阅读</string>
+    <string name="item_setting">设置</string>
+    <string name="setting_about">关于</string>
+    <string name="setting_update">更新</string>
+    <string name="setting_exam">评测</string>
+    <string name="setting_help">帮助与反馈</string>
+    <string name="setting_avatar_id">ID:</string>
+    <string name="setting_avatar_edit">编辑</string>
+    <string name="setting_login_alert">请登录</string>
+    <string name="setting_edit_dayword">单词数量</string>
+    <string name="setting_edit_complete">完成</string>
+    <string name="setting_edit_tooltip">任务</string>
+    <string name="home_next_btn">下一个</string>
+    <string name="home_previous_btn">前一个</string>
+    <string name="home_show_btn">查看翻译</string>
+    <string name="home_notification">通知</string>
+    <string name="login_login">登录</string>
+    <string name="login_regist">注册</string>
+    <string name="login_skip">跳过>>></string>
+    <string name="about_text">OkEnglish英文学习app</string>
+    <string name="about_copyright">CopyRight2020</string>
+    <string name="toolbar_back_btn">返回</string>
+    <string name="update_hint">请输入反馈</string>
+    <string name="update_btn">上传</string>
+
+    <string name="update_describe_one">登录或注册一个账号</string>
+    <string name="update_describe_two">选择计划</string>
+    <string name="exam_submit">完成评测</string>
+    <string name="exam_next">下一个</string>
+</resources>

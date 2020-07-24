@@ -1,0 +1,146 @@
+<html>
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+    <meta http-equiv="Cache-Control" content="no-cache"/>
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, shrink-to-fit=no"/>
+    <meta name="keywords" content="OkEnglish下载,OkEnglish英语单词,OkEnglish官方下载"/>
+    <meta name="description" content="通过OkEnglish官网，安全地下载OkEnglish App"/>
+    <title>OkEnglish官网下载</title>
+    <style>
+         @media screen and (min-width: 0px) and (max-width: 500px){
+             html{
+                font-size: 6px !important;
+             }
+         }
+         @media screen and (min-width:500px) and (max-width:1000px){
+             html{
+                 font-size: 12px !important;
+             }
+         }
+         @media screen and (min-width:1000px) {
+             html{
+                 font-size: 16px !important;
+             }
+         }
+          body{
+            overflow-x:hidden;
+             margin: 0;
+             padding: 0;
+             border: 0;
+             outline: 0;
+        }
+        .slide-item{
+          width: 100%;
+          height: 100%;
+          margin:0;
+          padding:0;
+        }
+        .btn{
+            position: fixed;
+            bottom:10rem;
+            font-size: 10rem;
+            width: 30%;
+            left: 35%;;
+            background: transparent;
+            border:.05rem solid white;
+            ;
+        }
+        .btn:hover{
+            border-color: lightgrey;
+        }
+        @keyframes dropDown {
+            from{
+            top:0rem;
+            }
+            to{
+            top:10rem;
+            }
+        }
+        .drop-item{
+            animation:dropDown 2s ease-in-out forwards;
+        }
+
+
+
+
+
+
+
+
+
+    </style>
+</head>
+<body>
+<div class="slide-item" style="background: url(img/phone.jpg) no-repeat;background-size:cover;">
+    <p class="drop-item" style="color: white;font-size: 10rem; text-align: center;position: relative;">
+        OkEnglish
+    </p>
+    <p class="drop-item" style="color: white;font-size: 5rem; text-align: center;position: relative; ">
+        英语单词记忆好帮手
+    </p>
+</div>
+<div class="slide-item" style="background: url(img/bolt.jpg) no-repeat;background-size:cover;">
+    <p class="drop-item"
+       style="position: relative;text-align: center;color: white;font-size: 6rem;">
+        OkEnglish 一个让你放松背单词，快乐学英语的好工具。
+    </p>
+</div>
+<div class="btn" onclick="goDownload()"><h3 style="color: white;font-size: 2rem; text-align:center;">
+    下载OkEnglish</h3>
+</div>
+</body>
+<script>
+    function goDownload(){
+        window.location.href="apk/OkEnglish.apk"
+    }
+    var scrollType={up:1,down:-1,none:0}
+    var StartTouchY,isScroll=scrollType.none;
+    document.addEventListener("touchstart",function(e){
+         StartTouchY=e.targetTouches[0].clientY;
+    })
+    document.addEventListener("touchmove",function(e){
+        var distance=StartTouchY-e.targetTouches[0].clientY;
+        var gap=window.screen.height/3;
+         if(distance>0){
+            if(distance>gap)isScroll=scrollType.down;
+         }else{
+            if(-distance>gap)isScroll=scrollType.up;
+         }
+    })
+    document.addEventListener("touchend",function(e){
+      switch(isScroll){
+          case scrollType.down:
+          window.scrollTo(0,window.screen.height);   
+          break;
+          case scrollType.up:
+          window.scrollTo(0,-window.screen.height);   
+          break;
+      }
+      isScroll=scrollType.none;
+    })
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</script>
+</html>

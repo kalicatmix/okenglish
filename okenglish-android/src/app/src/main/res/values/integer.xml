@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <integer name="lottie_anim_repeat_time">500</integer>
+    <integer name="dayword_min">50</integer>
+    <integer name="dayword_max">200</integer>
+</resources>

@@ -1,0 +1,92 @@
+<html>
+<head>
+    <meta name="description" content="OKEnglish manager site"/>
+    <meta charset="utf8"/>
+    <title>OkEnglish管理员登录</title>
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <style>
+.card{
+padding: 0px;
+margin-left: 25%;
+margin-top:5%;
+width:50%;
+border-radius: 0.5em;
+}
+
+
+
+
+
+
+
+    </style>
+</head>
+<body>
+<div id="app">
+    <el-card class="card">
+        <el-row>
+            <el-col class="icon-col">
+                <el-image style="height: 30%;width:40%;padding: 0px;margin-left: 30%;" src="/img/anim.gif"/>
+            </el-col>
+            <el-col>
+                <el-form name="form" :model="form" method="POST" enctype="application/x-www-form-urlencoded"
+                         label-width="120px" action="/admin/login">
+                    <el-form-item label="用户">
+                        <el-input type="text" v-model="form.name" placeholder="请输入用户名" minlength="5" name="name"
+                                  maxlength="10"></el-input>
+                    </el-form-item>
+                    <el-form-item label="密码">
+                        <el-input type="password" v-model="form.pwd" name="pwd" show-password placeholder="请输入密码"
+                                  minlength="5"
+                                  maxlength="15"></el-input>
+                    </el-form-item>
+                    <el-form-item>
+                        <el-button type="primary" @click="onSubmit">登录</el-button>
+                        <el-button @click="clearInput">清空</el-button>
+                        <el-divider content-position="left">
+                            本页面只供管理员使用
+                        </el-divider>
+                    </el-form-item>
+                </el-form>
+            </el-col>
+            <el-tag @click="goDownloadApp">下载App</el-tag>
+        </el-row>
+    </el-card>
+</div>
+</body>
+<script src="https://unpkg.com/vue/dist/vue.min.js"></script>
+<script src="https://unpkg.com/element-ui/lib/index.js"></script>
+<script>
+   new Vue({
+      el: '#app',
+      data: function() {
+        return { form:{
+          name:'',pwd:''
+        } }
+      },
+      methods:{
+       onSubmit:function(){
+         var testWordReg=/.*[\w]+.*/g;
+         var testSpecialReg=/.*[\.\$#$@]+.*/g;
+         if(this.form.name==""||this.form.pwd=="")this.$message("用户或密码不能不填哟")
+         else if(testWordReg.test(this.form.pwd)&&testSpecialReg.test(this.form.pwd))window.form.submit()
+         else this.$message("密码需包含@#$.数字和字母等符号")
+       },
+       clearInput:function(){
+       this.form.name=""
+       this.form.pwd=""
+       },
+       goDownloadApp:function(){
+       window.location.href="mobile.html"
+       }
+      }
+    })
+
+
+
+
+
+
+
+</script>
+</html>

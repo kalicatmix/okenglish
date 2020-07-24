@@ -1,0 +1,631 @@
+<html>
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="description" content="OKEnglish manager site"/>
+        <meta  charset="utf8">
+        <title>OKEnglish管理员</title>
+   <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+   <style>
+     @media screen and (max-width:  500px){
+      .dist-item{
+      width:10em;
+      height:10em;
+     }
+     }
+
+     @media screen and (min-width: 500px){
+      .dist-item{
+      width:20em;
+      height:20em;
+     }
+     }
+   </style>
+</head>
+<body>
+  <div id="app">
+    <el-row>
+  <el-col >
+    <el-row>
+       <el-col :span="4">
+            <el-image  src="/img/avatar.gif" style="width:60%;height:20%;" />
+       </el-col>
+       <el-col :span="8">
+        <el-card>
+            <p>通知</p>
+            <el-badge :value="userAddNumber" class="item">
+                <el-button size="small" @click="showNewUser">新增用户</el-button>
+              </el-badge>
+              <span style="margin: 5%;"/>
+              <el-badge :value="lastLog" class="item">
+                <el-button size="small" @click="showLastLog">最近日志</el-button>
+              </el-badge>
+        </el-card>
+       </el-col>
+    </el-row>
+ </el-col>
+ <el-col>
+     <el-divider>管理员</el-divider>
+ </el-col>
+ <el-col>
+    <el-tabs v-model="activeName" tab-position="left">
+        <el-tab-pane label="状态" name="status">
+          <el-row>
+            <el-col span="12">
+              <el-card>
+                <el-row>
+                  <el-col>
+                    <span>当前主机运行状态</span>
+                  </el-col>
+                  <el-col><el-divider/></el-col>
+                  <el-col>
+                <el-collapse  accordion>
+                
+                <el-collapse-item title="JVM环境" name="item1">
+                <div v-html="jvmEnv"></div>
+                </el-collapse-item>
+                <el-collapse-item title="端口信息" name="item2">
+                  <div v-html="portInfo"></div>
+                  </el-collapse-item>
+                <el-collapse-item title="docker状态" name="item3">
+                    <div v-html="dockerStatus"></div>
+                </el-collapse-item>
+                <el-collapse-item title="主机状态" name="item4">
+                      <div v-html="hostStatus"></div>
+                </el-collapse-item>
+
+                </el-collapse>
+                  </el-col>
+                </el-row>
+              </el-card>
+            </el-col>
+            <el-col span="12">
+              <el-card>
+                <el-row>
+                <el-col>
+                  <span>在线用户</span>
+                </el-col>
+                <el-col><el-divider/></el-col>
+                <el-col>
+                <div v-html="onlineUser"></div>
+                </el-col>
+              </el-row>
+              </el-card>
+            </el-col>
+          </el-row>
+        </el-tab-pane>
+        <el-tab-pane label="编辑" name="edit">
+          <el-tabs v-model="editTab" tab-position="left">
+            <el-tab-pane label="用户" name="user">
+             <el-card>
+              <el-row>
+                <el-col>
+
+                  <el-table
+                  :data="userData.filter(data => !search || data.name.toLowerCase().includes(search.toLowerCase()))"
+                  >
+                  <el-table-column
+                    label="用户"
+                    prop="name">
+                  </el-table-column>
+                  <el-table-column
+                    label="email"
+                    prop="email">
+                  </el-table-column>
+                  <el-table-column
+                   label="单词计划/天"
+                   prop="wordPlan" >
+                  </el-table-column>
+                  <el-table-column
+                   label="词汇量"
+                   prop="wordSize" >
+                  </el-table-column>
+                  <el-table-column
+                    align="right">
+                    <template slot="header" slot-scope="scope">
+                      <el-input
+                        v-model="search"
+                        size="mini"
+                        placeholder="搜索"/>
+                    </template>
+                  </el-table-column>
+                </el-table>
+
+
+                </el-col>
+                <el-col>
+                <el-pagination
+                backgroud="true"
+                :page-size.sync="pageSize"
+                :total="totalPageSize"
+                :current-page.sync="currentPage"
+                prev-text="上一页"
+                next-text="下一页"
+                @current-change="mainPage"
+                layout="prev, pager, next,total"
+                >
+                </el-pagination>
+              </el-col>
+              </el-row>
+             </el-card>
+            </el-tab-pane>
+            <el-tab-pane label="内容" name="content">
+              <el-row>
+              <el-col span="8">
+              <el-card style="margin: 5%;">
+               <el-row>
+                 <el-col><el-divider content-position="center">通知</el-divider></el-col>
+                 <el-col>
+                  <el-table
+                  :data="notifyData">
+                  <el-table-column
+                    prop="date"
+                    label="日期"
+                    >
+                  </el-table-column>
+                  <el-table-column
+                    prop="content"
+                    label="内容"
+                    >
+                  </el-table-column>
+                </el-table>
+                 </el-col>
+                 <el-col>
+                   <el-input type="textarea" v-model="addNotifyData"></el-input>
+                 </el-col>
+                 <el-col><el-button size="small" icon="el-icon-edit" type="primary" round style="margin:5%" @click="addAppNotify">添加</el-button></el-col>
+                </el-row>
+              </el-card></el-col>
+              </el-row>
+            </el-tab-pane>
+            <el-tab-pane label="配置" name="config">
+              <el-card>
+              <el-row>
+                <el-col span="2"><span>远程shell</span></el-col>
+                <el-col span="6"><el-input v-model="shellCode" type="textarea"  placeholder="请输入shell"/></el-col>
+                <el-col span="4"><el-button type="primary" @click="executeShell" style="margin: 5%;">执行</el-button></el-col>
+              </el-row>
+              <el-row>
+                <el-col><el-divider/></el-col>
+                <el-col>
+                  <el-row>
+                    <el-col span="2"><span>读取配置</span></el-col>
+                    <el-col span="4"><el-tag type="success" @click="readJettyConfig">tomcat配置</el-tag></el-col>
+                    <el-col><el-divider/></el-col>
+                  </el-row>
+                </el-col>
+                <el-col span="24">
+                <el-input type="textarea" autosize  v-model="executeResult" disabled></el-input>
+                </el-col>
+                <el-col><el-divider /></el-col>
+                <el-col>
+                  <el-row>
+                    <el-col span="4"><span>上传apk安装包</span></el-col>
+                    <el-col span="4">
+                      <el-upload
+                      class="upload-demo"
+                      action="/admin/upload"
+                      name="apk"
+                      limit="1"
+                      accept=""
+                      >
+                      <el-button size="small" type="primary"  icon="el-icon-upload">上传</el-button>
+                      <div slot="tip" class="el-upload__tip">请上传安装包</div>
+                    </el-upload></el-col>
+                    <el-col span="4">
+                      <el-input size="mini" v-model="apkVersion" :placeholder="'输入版本,当前版本'+currentApkVersion"></el-input>
+                    </el-col>
+                    <el-col span="4"><el-button type="primary" size="small" style="margin-left: 5%;" @click="deployApk">部署</el-button></el-col>
+                  </el-row>
+                </el-col>
+              </el-row>
+              </el-card>
+            </el-tab-pane>
+          </el-tabs>
+        </el-tab-pane>
+        <el-tab-pane label="分析" name="analysis">
+        <el-row>
+       <el-col span="12">
+       <el-card>
+         <span>单词量分布</span>
+         <div id="dist_wordNumber" class="dist-item">
+         </div>
+       </el-card>
+       </el-col>
+      <el-col  span="12">
+        <el-card>
+          <span>用户地区分布</span>
+          <div id="dist_region" class="dist-item">
+          </div>
+        </el-card>
+      </el-col>
+        </el-row>
+        <el-row>
+       <el-col  span="12">
+        <el-card>
+          <span>用户状态分布</span>
+          <div id="dist_status" class="dist-item">
+          </div>
+        </el-card>
+       </el-col>
+      <el-col  span="12">
+        <el-card>
+          <span>用户名分布</span>
+          <div id="dist_userName" class="dist-item">
+          </div>
+        </el-card>
+      </el-col>
+
+        </el-row>
+        </el-tab-pane>
+        <el-tab-pane label="设置" name="setting">
+          <el-card>
+            <el-row>
+             <el-col span="2">开启日志</el-col>
+             <el-col span="2">
+            <el-switch v-model="isLogEnable"/>
+            </el-col>
+            <el-col  span="2">开启通知</el-col>
+            <el-col  span="2"><el-switch v-model="isNotificationEnable"/></el-col>
+            <el-col><el-divider/></el-col>
+          </el-row>
+            <el-row>
+              <el-col span="4"><span>每页数据量</span></el-col>
+              <el-col span="8"><el-slider v-model="perPageNumbers" max="10" @change="checkPerPageNumberValue"/></el-col>
+            </el-row>
+          </el-card>
+        </el-tab-pane>
+      </el-tabs>
+    </el-col>
+    </el-row>
+  </div>
+</body>
+  <script src="https://unpkg.com/vue/dist/vue.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/echarts@4.6.0/dist/echarts.min.js"></script>
+  <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+  <script src="https://unpkg.com/axios@0.19.2/dist/axios.min.js"></script>
+  <script>
+   var MessageCode={success:"SUCCESS",error:"ERROR",wrong:"WRONG"}
+   var UserName=[],UserWord=[{value: 0, name: '小于2000'},{value: 0, name: '小于6000'},{value: 0, name: '小于10000'},{value: 0, name: '大于10000'}]
+   var UserDayPlan=[{value: 0, name: '小于100'},{value: 0, name: '小于200'},{value: 0, name: '大于200'},]
+   var Region=[],RegionCount=[]
+   new Vue({
+      el: '#app',
+      created:function(){
+      that=this;
+      axios.get("/info/system").then(function(data){
+        data.data.data.forEach(function(item){
+          that.jvmEnv+=item+"<br/>"
+        })
+        });
+        axios.get("/cmd/execute?cmd=netstat -tanp").then(function(data){
+          data.data.data.forEach(function(item){
+            that.portInfo+=item+"<br/>"
+          })
+        })
+        axios.get("/cmd/execute?cmd=docker images && docker ps").then(function(data){
+          data.data.data.forEach(function(item){
+            that.dockerStatus+=item+"<br/>"
+          })
+        })
+        axios.get("/cmd/execute?cmd=uname -a && free -h && df -h && lsblk").then(function(data){
+          data.data.data.forEach(function(item){
+            that.hostStatus+=item+"<br/>"
+          })
+        })
+        axios.get("/admin/status").then(function(data){
+          data.data.data.forEach(function(item){
+            that.onlineUser+=`${item.name+":"+item.id}<p style="color:#409EFF">${item.email}</p>`
+            that.onlineUser+="<br/>"
+          })
+        })
+
+        axios.get("/admin/notify/get").then(function(data){
+          data.data.data.forEach(function(item){
+            that.notifyData.push({date:item.date,content:item.content});
+          })
+        })
+        axios.get("/admin/new").then(function(data){
+          data.data.data.forEach(function(item){
+            that.userAddNumber++
+            that.newUsersMessage+=item.name+":"+item.email+"<br/>"
+          })
+        })
+        axios.get("/admin/logs").then(function(data){
+          data.data.data.forEach(function(item){
+            that.lastLog++;
+            that.newLogsMessage+="<br/>"
+            that.newLogsMessage+=item;
+          })
+        })
+        axios.get("/admin/version").then(function(data){
+         that.apkVersion=data.data.data
+        })
+       axios.get("/admin/users").then(function(data){
+          data.data.data.forEach(function(item){
+            that.fullUserData.push({name:item.name,email:item.email,wordPlan:item.dayWord,wordSize:item.wordSize})
+            that.totalPageSize++ 
+           //diagram data
+            UserName.push({name:item.name,value:[Math.random()*100,Math.random()*100]})
+            if(item.wordSize<2000)UserWord[0].value++;
+            else if(item.wordSize<6000)UserWord[1].value++;
+            else if(item.wordSize<10000)UserWord[2].value++;
+            else if(item.wordSize>=10000)UserWord[3].value++;
+            if(item.dayWord<100)UserDayPlan[0].value++;
+            else if(item.dayWord<200)UserDayPlan[1].value++;
+            else if(item.dayWord>200)UserDayPlan[2].value++;
+            let index=Region.indexOf(item.ipRegion);
+            if(index<0){Region.push(item.ipRegion);
+            RegionCount[Region.length-1]=1;
+            }
+            else RegionCount[index]++;
+          })
+          that.userData=that.fullUserData.slice(0,that.pageSize)
+
+          dist_userName.setOption(dist_userNameOption)
+          dist_wordNumber.setOption(dist_wordNumberOption)
+          dist_region.setOption(dist_regionOption)
+          dist_status.setOption(dist_statusOption)
+        })
+ 
+      },
+      data: function() {
+        return {
+          activeName:"status",
+          editTab:"user",
+          userAddNumber:0,lastLog:0,
+          isLogEnable:false,isNotificationEnable:true,
+          messages:{NotificationEnable:"通知已关闭，请到设置中开启"},
+          perPageNumbers:5,
+          pageSize:5,
+          currentPage:1,
+          totalPageSize:0,
+          search: '',
+          jvmEnv:"",
+          portInfo:"",
+          dockerStatus:"",
+          hostStatus:"",
+          onlineUser:"",
+          userData: [],
+          fullUserData:[],
+          shellCode:"",
+          executeResult:"",
+          apkVersion:"",
+          currentApkVersion:"1.23",
+          notifyData:[],
+          addNotifyData:"",
+          newUsersMessage:"",
+          newLogsMessage:"",
+        }
+      },
+      methods:{
+     showMessage:function(message){
+      this.$message(message)
+     },
+     showNewUser:function(){
+           if(this.isNotificationEnable){
+           this.$notify({
+            title:"新增用户",
+            dangerouslyUseHTMLString: true,
+            message:this.newUsersMessage,
+            position:"top-right"
+           })
+           }
+           else
+          this.showMessage(this.messages.NotificationEnable) 
+     },
+     showLastLog:function(){
+          if(this.isNotificationEnable)
+          this.$notify({
+            title:"最近日志",
+            dangerouslyUseHTMLString: true,
+            message:this.newLogsMessage,
+            position:"top-right"
+           })
+           else
+           this.showMessage(this.messages.NotificationEnable)
+     },
+      checkPerPageNumberValue:function(e){
+        if(this.perPageNumbers<3){
+          this.showMessage("每页数据不能少于3条")
+          this.perPageNumbers=5
+        }else{
+          this.pageSize=this.perPageNumbers
+          this.userData=this.fullUserData.slice(0,this.pageSize)
+        }
+      },
+      mainPage:function(page){
+        let start=(page-1)*this.pageSize
+        this.userData=this.fullUserData.slice(start,start+this.pageSize)
+      },
+      executeShell:function(){
+        let that=this
+        axios.get("/cmd/execute",{"params":{"cmd":that.shellCode}}).then(function(data){
+            that.executeResult=""
+            data.data.data.forEach(function(item){
+            that.executeResult+=item+"\n"
+          })
+        })
+        this.shellCode=""
+      },
+      deployApk:function(){
+         axios.get("/admin/deploy?version="+this.apkVersion).then(function(data){
+           console.log(data)
+         })
+      },
+      addAppNotify:function(){
+        let that=this
+        if(that.addNotifyData=="")return
+        let date=new Date().toLocaleString()
+        let content=this.addNotifyData
+        let formData=new FormData()
+        formData.append("date",date)
+        formData.append("content",content)
+        axios({
+          method:'post',
+          url:'/admin/notify',
+          data:formData,
+          headers:{"content-type":"application/x-www-form-urlencoded"}
+        }).then(function(data){
+        if(!(data.data.code==MessageCode.success)){that.$message("添加失败");return}
+        if(that.notifyData.length<5)
+        that.notifyData.push({date:date,content:content})
+        else{
+        that.notifyData.shift()
+        that.notifyData.push({date:date,content:content})
+        }
+        that.$message("添加成功")
+        that.addNotifyData=""
+        })
+         },
+        readJettyConfig:function(){
+          let that=this
+         axios.get("/info/file",{"params":{"path":"config"}}).then(function(data){
+            that.executeResult=""
+            data.data.data.forEach(function(item){
+            that.executeResult+=item+"\n"
+          })
+        })
+         }
+      }
+    })
+
+    //set up echarts draw
+    var dist_wordNumber=echarts.init(document.getElementById("dist_wordNumber"))
+    var dist_region=echarts.init(document.getElementById("dist_region"))
+    var dist_userName=echarts.init(document.getElementById("dist_userName"))
+    var dist_status=echarts.init(document.getElementById("dist_status"))
+    
+    var dist_wordNumberOption= {
+      title: {
+        text: '单词量汇总',
+        left: 'center'
+    },
+    tooltip: {
+        trigger: 'item',
+        formatter: '{a} <br/>{b} : {c} ({d}%)'
+    },
+    legend: {
+        orient: 'vertical',
+        left: 'left',
+        data: ['小于2000','小于6000', '小于10000', '大于10000']
+    },
+    series: [
+        {
+            name: '单词量汇总',
+            type: 'pie',
+            radius: '55%',
+            center: ['50%', '60%'],
+            data:UserWord,
+            emphasis: {
+                itemStyle: {
+                    shadowBlur: 10,
+                    shadowOffsetX: 0,
+                    shadowColor: 'rgba(0, 0, 0, 0.5)'
+                }
+            }
+        }
+    ]
+};
+  
+  var dist_regionOption={
+    title: {
+        text: '区域分布',
+    },
+    color: ['#3398DB'],
+    tooltip: {
+        trigger: 'axis',
+        axisPointer: {           
+            type: 'shadow'   
+        }
+    },
+    xAxis: {
+        data:Region,
+        axisLabel: {
+            inside: true,
+            textStyle: {
+                color: '#fff'
+            }
+        },
+        axisTick: {
+            show: false
+        },
+        axisLine: {
+            show: false
+        },
+        z: 10
+    },
+    yAxis: {
+        axisLine: {
+            show: false
+        },
+        axisTick: {
+            show: true
+        },
+    },
+    series:[
+    {      
+            type: 'bar',
+            data:RegionCount
+        },
+    ],
+    
+  };
+  var dist_statusOption={
+    tooltip: {
+        trigger: 'item',
+        formatter: '{a} <br/>{b}: {c} ({d}%)'
+    },
+    legend: {
+        orient: 'vertical',
+        left: 10,
+        data: ['小于100', '小于200',"大于200"]
+    },
+    series: [
+        {
+            name: '用户计划',
+            type: 'pie',
+            radius: ['50%', '70%'],
+            avoidLabelOverlap: false,
+            label: {
+                normal: {
+                    show: false,
+                    position: 'center'
+                },
+                emphasis: {
+                    show: true,
+                    textStyle: {
+                        fontSize: '30',
+                        fontWeight: 'bold'
+                    }
+                }
+            },
+            data:UserDayPlan
+        }
+    ]
+
+  }
+  var dist_userNameOption={
+    color: ['#3398DB'],
+    title: {
+            text: '用户名称分布',
+            left: 'center',
+        },
+        tooltip: {
+            trigger: 'item',
+            formatter:'{b}'
+        },
+       xAxis:{
+         show:false
+       },
+       yAxis:{
+           show:false
+       },
+        series: [{
+            type: 'scatter',
+            symbolSize: 5,
+            data:UserName
+        }]
+  }
+
+  </script>
+</html>

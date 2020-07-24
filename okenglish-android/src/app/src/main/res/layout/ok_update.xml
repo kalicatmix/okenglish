@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@android:color/white"
+    >
+    <include layout="@layout/ok_toolbar" />
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/about_animation_height"
+        app:lottie_fileName="gps-blue.json"
+        app:lottie_autoPlay="true"
+        app:lottie_repeatCount="10">
+    </com.airbnb.lottie.LottieAnimationView>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textSize="@dimen/about_toolbar_font_size"
+        android:text="当前版本"
+        android:drawableTop="@drawable/ic_autorenew_24dp"
+        android:id="@+id/update_btn"
+        />
+</LinearLayout>

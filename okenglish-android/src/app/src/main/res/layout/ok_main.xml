@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    tools:context=".activity.OkEnglish">
+    <include
+        layout="@layout/ok_container"
+        app:layout_constraintTop_toTopOf="parent" />
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/tabBar"
+        android:layout_width="match_parent"
+        android:layout_height="50dip"
+        app:menu="@menu/tabs"
+        app:elevation="@dimen/elevation"
+        app:itemTextColor="@color/sel_tab_item"
+        app:itemIconTint="@color/sel_tab_item"
+        app:itemBackground="@android:color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+       />
+</androidx.constraintlayout.widget.ConstraintLayout>
