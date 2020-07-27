@@ -12,7 +12,7 @@ public class ApiKit {
     public static final String URL_NEWS_VIDEO_BASE = "http://static.iyuba.cn/video/voa/";
     public static final String URL_WORD_AUDIO_BASE = "http://dict.youdao.com/dictvoice?audio=";
 
-    public static final String URL_REMOTE_HOST = "http://49.233.177.45";
+    public static final String URL_REMOTE_HOST = "【your server】";
     public static final String URL_USER_LOGIN = "/api/v1/user/login";
     public static final String URL_USER_PWD_CHANGE = "/api/v1/user/?/pwd/change";
     public static final String URL_USER_ADD = "/api/v1/user/add";
